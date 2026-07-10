@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eco-Balance: Equilibrium Simulator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <aside id="left-panel">
+    <header class="phead"><h2>🌍 Environment Controls</h2><p>Adjust climate to sustain life</p></header>
+    <section class="psec">
+      <h3 class="sec-t">Climate</h3>
+
+      <div class="sg">
+        <div class="sg-top"><label>🌧️ Annual Rainfall</label><span class="sg-val" id="v-rain">600 mm</span></div>
+        <div class="sg-wrap"><div class="sg-track rain-t"></div><input type="range" id="s-rain" min="0" max="3000" value="600" step="10"></div>
+        <div class="sg-ticks">
+          <span>0</span><span>250<br><em>Desert</em></span><span>600<br><em>Grassland</em></span><span>1200<br><em>Forest</em></span><span>2000<br><em>Tropical</em></span><span>3000<br><em>Monsoon</em></span>
+        </div>
+        <div class="sg-warn" id="w-rain"></div>
+      </div>
+
+      <div class="sg">
+        <div class="sg-top"><label>🌡️ Temperature</label><span class="sg-val" id="v-temp">20 °C</span></div>
+        <div class="sg-wrap"><div class="sg-track temp-t"></div><input type="range" id="s-temp" min="-40" max="60" value="20"></div>
+        <div class="sg-ticks">
+          <span>-40°<br><em>Arctic</em></span><span>0°<br><em>Frost</em></span><span>20°<br><em>Ideal</em></span><span>35°<br><em>Hot</em></span><span>45°<br><em>Deadly</em></span><span>60°</span>
+        </div>
+        <div class="sg-warn" id="w-temp"></div>
+      </div>
+
+      <div class="sg">
+        <div class="sg-top"><label>☀️ Sunlight</label><span class="sg-val" id="v-sun">70%</span></div>
+        <div class="sg-wrap"><div class="sg-track sun-t"></div><input type="range" id="s-sun" min="0" max="100" value="70"></div>
+        <div class="sg-ticks"><span>0%<br><em>Dark</em></span><span>30%<br><em>Cloudy</em></span><span>70%<br><em>Clear</em></span><span>100%<br><em>Blinding</em></span></div>
+      </div>
+
+      <div class="sg">
+        <div class="sg-top"><label>🍄 Decomposition</label><span class="sg-val" id="v-decomp">50%</span></div>
+        <div class="sg-wrap"><div class="sg-track decomp-t"></div><input type="range" id="s-decomp" min="0" max="100" value="50"></div>
+        <div class="sg-ticks"><span>0%<br><em>None</em></span><span>50%<br><em>Normal</em></span><span>100%<br><em>Rapid</em></span></div>
+      </div>
+
+      <div class="sg">
+        <div class="sg-top"><label>🏭 Air Quality (AQI)</label><span class="sg-val" id="v-poll">20 · Good</span></div>
+        <div class="sg-wrap"><div class="sg-track poll-t"></div><input type="range" id="s-poll" min="0" max="500" value="20" step="5"></div>
+        <div class="sg-ticks">
+          <span>0<br><em>Clean</em></span><span>50<br><em>Good</em></span><span>150<br><em>Unhealthy</em></span><span>300<br><em>Hazardous</em></span><span>500<br><em>Lethal</em></span>
+        </div>
+        <div class="sg-warn" id="w-poll"></div>
+      </div>
+    </section>
+
+    <section class="psec">
+      <h3 class="sec-t">Simulation</h3>
+      <div class="brow"><button class="btn" id="btn-pause">⏸ Pause</button><button class="btn" id="btn-speed">▶ 1×</button></div>
+      <div class="brow"><button class="btn btn-red" id="btn-reset">↺ Reset</button><button class="btn btn-blue" id="btn-aid">💊 Aid</button></div>
+    </section>
+    <section class="psec psec-flush"><h3 class="sec-t">📋 Events</h3></section>
+    <div id="log"></div>
+  </aside>
+
+  <main id="center">
+    <div id="topbar">
+      <div class="tb-l"><h1>ECO-BALANCE</h1><span class="badge" id="badge">STABLE</span></div>
+      <div id="clock">
+        <div class="ck">Year <b id="el-yr">1</b></div>
+        <div class="ck">Month <b id="el-mo">1</b></div>
+        <div class="ck">Pop <b id="el-pop">0</b></div>
+      </div>
+    </div>
+    <div id="cvwrap"><canvas id="world"></canvas><div id="banner"></div></div>
+    <div id="sbar"></div>
+  </main>
+
+  <aside id="right-panel">
+    <header class="phead"><h2>📊 Analytics</h2><p>Population &amp; ecosystem health</p></header>
+    <div id="legend"></div>
+    <div id="graphs">
+      <div class="gc gc-big"><div class="gc-h"><h3>Population Over Time</h3></div><canvas id="g-pop"></canvas></div>
+      <div class="gc"><div class="gc-h"><h3>Carrying Capacity %</h3></div><canvas id="g-bar"></canvas></div>
+    </div>
+    <div class="scard">
+      <div class="scard-r"><h4>Ecosystem Health</h4><div class="scard-v" id="hp-v">100%</div></div>
+      <div class="scard-bar"><div class="scard-fill" id="hp-b"></div></div>
+      <div class="hp-detail" id="hp-det"></div>
+    </div>
+    <div class="mgrid">
+      <div class="mbox"><div class="ml">Soil</div><div class="mv" id="x-soil">80</div></div>
+      <div class="mbox"><div class="ml">O₂</div><div class="mv" id="x-o2">21%</div></div>
+      <div class="mbox"><div class="ml">Water</div><div class="mv" id="x-water">Good</div></div>
+      <div class="mbox"><div class="ml">Species</div><div class="mv" id="x-spp">6/6</div></div>
+      <div class="mbox"><div class="ml">Deaths</div><div class="mv" id="x-de">0</div></div>
+      <div class="mbox"><div class="ml">Births</div><div class="mv" id="x-bi">0</div></div>
+    </div>
+  </aside>
+</div>
+
+<div id="gameover">
+  <h1>💀 ECOSYSTEM COLLAPSED</h1>
+  <p id="go-msg">A species went extinct.</p>
+  <div class="go-stats">
+    <div><b id="go-yr">1</b><small>Years</small></div>
+    <div><b id="go-pk">0</b><small>Peak</small></div>
+    <div><b id="go-ev">0</b><small>Events</small></div>
+    <div><b id="go-de">0</b><small>Deaths</small></div>
+  </div>
+  <button id="go-btn">↺ New Simulation</button>
+</div>
+<script src="sim.js"></script>
+</body>
+</html>
